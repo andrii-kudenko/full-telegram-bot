@@ -1,0 +1,22 @@
+# Virtual environment and dependencies
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Poetry files
+poetry.lock
+
+# macOS and Windows files
+.DS_Store
+Thumbs.db
+
+# SQLite database files
+*.sqlite3
+
+# Logs and other output
+*.log
+
+# Python cache files
+*.egg-info/
