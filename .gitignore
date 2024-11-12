@@ -20,3 +20,5 @@ Thumbs.db
 
 # Python cache files
 *.egg-info/
+# Alembic migration files
+alembic/versions/*.pyc
