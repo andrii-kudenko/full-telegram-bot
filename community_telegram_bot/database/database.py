@@ -1,17 +1,19 @@
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+from dotenv import load_dotenv
+import os
 
-DATABASE_URL = "postgresql+asyncpg://postgres:1234@localhost/dev-community-telegram-bot"
+# *Load database url
+load_dotenv()
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 # Create an async engine
 engine = create_async_engine(DATABASE_URL, echo=True)
 
 # Use async session
 AsyncSessionLocal = sessionmaker(
-    bind=engine, class_=AsyncSession, expire_on_commit=False
+    bind=engine, class_=AsyncSession
 )
-
-Base = declarative_base()
 
 # Dependency to get async DB session
 async def get_db():

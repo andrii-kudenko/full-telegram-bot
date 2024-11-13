@@ -2,8 +2,12 @@ import asyncio
 from logging.config import fileConfig
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 from alembic import context
-from community_telegram_bot.database.database import Base
+from community_telegram_bot.database.models import Base
 from community_telegram_bot.database.models import *
+from community_telegram_bot.database.database import DATABASE_URL
+
+import os
+from dotenv import load_dotenv
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -18,7 +22,9 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
-DATABASE_URL = config.get_main_option("sqlalchemy.url")
+
+
+# DATABASE_URL = config.get_main_option("sqlalchemy.url")
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
