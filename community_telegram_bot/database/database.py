@@ -12,7 +12,7 @@ engine = create_async_engine(DATABASE_URL, echo=True)
 
 # Use async session
 AsyncSessionLocal = sessionmaker(
-    bind=engine, class_=AsyncSession
+    bind=engine, class_=AsyncSession, expire_on_commit=False
 )
 
 # Dependency to get async DB session

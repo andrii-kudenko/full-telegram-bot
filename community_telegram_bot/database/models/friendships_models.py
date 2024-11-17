@@ -19,15 +19,17 @@ class Bio(Base):
     profile_age: Mapped[int] = mapped_column(Integer, nullable=False)
     gender: Mapped[GenderEnum] = mapped_column(SQLEnum(GenderEnum, name="gender_enum"), nullable=False)
     profile_bio: Mapped[str] = mapped_column(String(255), nullable=False)
-    latitude: Mapped[str] = mapped_column(String(15))
-    longitude: Mapped[str] = mapped_column(String(15))
+    latitude: Mapped[str] = mapped_column(String(15), nullable=True)
+    longitude: Mapped[str] = mapped_column(String(15), nullable=True)
     profile_city: Mapped[str] = mapped_column(String(50), nullable=False)
-    profile_region: Mapped[str] = mapped_column(String(50))
-    profile_country: Mapped[str] = mapped_column(String(50))
+    profile_region: Mapped[str] = mapped_column(String(50), nullable=True)
+    profile_country: Mapped[str] = mapped_column(String(50), nullable=True)
     user = relationship("User", back_populates="bio", uselist=False)
     photos: Mapped[List["BioPhoto"]] = relationship(back_populates="bio", cascade="all, delete-orphan")
     likes_sent: Mapped[List["Like"]] = relationship(back_populates="like_sender_bio", cascade="all, delete-orphan", foreign_keys='Like.like_sender_bio_id')
-    likes_received: Mapped[List["Like"]] = relationship(back_populates="liked_bio", cascade="all, delete-orphan", foreign_keys='Like.like_receiver_bio_id')
+    likes_received: Mapped[List["Like"]] = relationship(back_populates="like_receiver_bio", cascade="all, delete-orphan", foreign_keys='Like.like_receiver_bio_id')
+    search_filter: Mapped["FriendshipSearchFilter"] = relationship(back_populates="bio", 
+                                                                   cascade="all, delete-orphan", foreign_keys='FriendshipSearchFilter.bio_id', uselist=False)
 
 class BioPhoto(Base):
     __tablename__ = 'bios_photos'
@@ -48,9 +50,12 @@ class Like(Base):
 class FriendshipSearchFilter(Base):
     __tablename__ = 'friendships_search_filter'
     user_id: Mapped[BigInteger] = mapped_column(BigInteger, ForeignKey('users.user_id'), primary_key=True, index=True)
+    bio_id: Mapped[int] = mapped_column(Integer, ForeignKey('bios.id', ondelete='CASCADE'))
+    gender: Mapped[GenderEnum] = mapped_column(SQLEnum(GenderEnum, name="gender_enum"), nullable=True)
     city: Mapped[str] = mapped_column(String(50), nullable=True)
     region: Mapped[str] = mapped_column(String(50), nullable=True)
     country: Mapped[str] = mapped_column(String(50), nullable=True)
+    search_id: Mapped[int] = mapped_column(Integer, nullable=True)
     search_id_list: Mapped[list] = mapped_column(JSON, nullable=True)  # List of IDs the user has already seen
     city_search: Mapped[bool] = mapped_column(Boolean, default=True)
-    gender: Mapped[GenderEnum] = mapped_column(SQLEnum(GenderEnum, name="gender_enum"), nullable=False)
+    bio: Mapped["Bio"] = relationship(back_populates="search_filter", cascade="all, delete-orphan", foreign_keys=[bio_id], uselist=False, single_parent=True)

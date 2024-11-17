@@ -8,7 +8,7 @@ async def get_user_by_user_id(db: AsyncSession, user_id: BigInteger) -> User | N
     result = await db.execute(select(User).where(User.user_id == user_id))
     return result.scalars().first()
 
-async def create_user(db: AsyncSession, user_id: BigInteger, name: str):
+async def create_user(db: AsyncSession, user_id: BigInteger, name: str=None):
     """Create a new user."""
     new_user = User(user_id=user_id, name=name)
     db.add(new_user)
