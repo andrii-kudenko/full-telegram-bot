@@ -17,6 +17,9 @@ from aiogram.methods.send_media_group import SendMediaGroup
 from aiogram.fsm.context import FSMContext
 
 from community_telegram_bot.database.database import AsyncSessionLocal
+from community_telegram_bot.handlers.friendships.friendships_routers import friendships_router
+
+from community_telegram_bot.database.requests import user_requests as urq
 
 from dotenv import load_dotenv
 import os
@@ -30,12 +33,18 @@ bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTM
 dp = Dispatcher()
 # *Create main router
 main_router = Router(name=__name__)
-dp.include_routers(main_router)
+dp.include_routers(main_router, friendships_router)
 
 # *Main router handler
 @main_router.message(CommandStart())
 async def command_start_handler(message: Message):
-    await message.reply(f"Hello, {message.from_user.full_name}")
+    async with AsyncSessionLocal() as session:
+        user = await urq.get_user_by_user_id(session, message.from_user.id)
+        if user is None:
+            user = await urq.create_user(session, message.from_user.id, message.from_user.full_name)
+            await message.reply(f"Welcome, {message.from_user.full_name}")
+        else:
+            await message.reply(f"Welcome back, {message.from_user.full_name}")
     # async with AsyncSessionLocal() as session:
 
 

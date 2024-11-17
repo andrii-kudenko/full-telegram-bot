@@ -44,7 +44,10 @@ photosUploadingReplyMenu2 = ReplyKeyboardMarkup(resize_keyboard=True, keyboard=[
 btnLocation = KeyboardButton(text='Provide Location', request_location=True)
 locationMenu = ReplyKeyboardMarkup(resize_keyboard=True, keyboard=[[btnLocation]])
 
-
+# --- ASK GENDER ---
+btnMan = KeyboardButton(text="👨🏽")
+btnWoman = KeyboardButton(text="👩🏽")
+askGenderMenu = ReplyKeyboardMarkup(resize_keyboard=True, keyboard=[[btnMan], [btnWoman]])
 
 
 homeChoiceMenu = InlineKeyboardBuilder() # When there are no more profiles to look
@@ -69,3 +72,4 @@ async def create_blank_keyboard(text):
     blankMenu = InlineKeyboardBuilder()
     blankMenu.button(text=f"{text}", callback_data=BlankCallback(text=f"{text}").pack())
     return blankMenu.as_markup()
+
